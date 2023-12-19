@@ -65,4 +65,4 @@ In the interest of brevity I have only discussed accuracy thusfar. While all mod
 
 ## Next Steps 
 
-While I am able to predict the activity type to a high degree of accuracy, the results are less helpful than I would like because I made use of all $561$ features. The huge number of features cannot be easily calculated, which limits the application of my work. The clear next step is to create a model which predicts activity type just as accuractly using as few features as possible. 
+While I am able to predict the activity type to a high degree of accuracy, the results are less helpful than I would like because I made use of all $561$ features. The huge number of features cannot be quickly calculated, which limits the application of my work. The clear next step is to create a model which predicts activity type using as few features as possible without sacrificing too much accuracy. 
