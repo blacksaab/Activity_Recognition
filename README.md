@@ -22,12 +22,18 @@ This data has $561$ features - which is both a blessing and a curse. The large n
 
 The data for this set are calculated by taking the average of a $128$-wide rolling window with $50\%$ overlap. For example, the X-Axis Acceleration is calculated by averaging $2.56$ second long windows (which overlap each other by $50\%$). This means that the rows are average readings taken $1.28$ seconds apart from each other. 
 
-When viewed as a whole, there are clear differences between the different activity types. The following plot shows the Z-axis acceleration for all 6 activity types side-by-side. 
+The following plot shows the X-axis acceleration for all 6 activity types side-by-side. 
 
 <!-- Insert image of activity plots -->
-![Z-axis acceleration for all activities](/images/Activities.png)
+![X-axis acceleration for all activities](/images/Activities.png)
 
+We see that each activity has a distinct pattern. The following plot shows a histogram for the X-axis acceleration for each activity type. 
 
+![Distribution of X-axis acceleration for each activity](/images/Activities.png)
+
+This plot further shows that for X-axis acceleration, each activity type has its own distinct distribution. Specifically, there is a striking difference between the moving activities (walking, walking upstairs, and walking downstairs), and the non-moving activities (sitting, standing, and laying). 
+
+While it would be interesting to perform similar EDA on every variable, this is not pheasible because there are $560$ more features to look at. 
 
 
 ## Overview of Models 
@@ -55,12 +61,45 @@ In the case of the neural net, it appears that using UMAP let to overfitting and
 
 ## Model Selection 
 
-In the interest of brevity I have only discussed accuracy thusfar. While all models performed similarly, the model which performed best overall (considering all classification metrics) is the MLP fit on the full feature set (`MLP`). In precision, recall, f1-score, and accuracy, `MLP` outperformed all other models when predicting the test data. 
+In the interest of brevity I have only discussed accuracy thusfar. While all models performed similarly, the model which performed best overall (considering all classification metric; not just accuracy) is the MLP fit on the full feature set (`MLP`). In precision, recall, f1-score, and accuracy, `MLP` outperformed all other models when predicting the test data. 
 
 
 ## Discussion of Best Model 
 
+### Classification Metrics
 
+The output from the `classification_report()` function for `MLP` is the following: 
+
+                  precision    recall  f1-score   support
+
+               1       0.92      0.98      0.95       496
+               2       0.93      0.91      0.92       471
+               3       0.98      0.95      0.96       420
+               4       0.95      0.89      0.92       491
+               5       0.91      0.96      0.93       532
+               6       1.00      0.99      1.00       537
+
+        accuracy                           0.95      2947
+       macro avg       0.95      0.95      0.95      2947
+    weighted avg       0.95      0.95      0.95      2947
+
+Precision is the proportion of correctly predicted observations out of the total number of predicted observations for a particular class. We see that `MLP` has the best accuracy when classifying activity 6 (laying down), and has the worst accuracy when classifying activities 1 and 5 (walking and standing respectively). This indicates that activities are most likely to be misclassified as walking or standing. 
+
+Recall is the proportion of correctly classified observations out of the total number of predictions for a praticular class. `MLP` has relatively low recall when classifying activity 4 (sitting) and activity 2 (walking upstairs). This indicates that `MLP` misclassifies these classes most frequently. 
+
+Overall, this model still performs very well. The accuracy, which is the total number of correct predictions out of the total number of predictions, is $95\%$. 
+
+### SHAP
+
+In order to show which features were the most important in making predictions, I calculated SHAP values. 
+
+![shap bar plot](/images/shap_bar_plot.png)
+
+This plot shows the marginal importance of each feature. I was hoping that only a few features would account for most of the prediction; however, we see that the vast majority of importance comes from the "$552$ other features". This means that a large number of features are used by the model when making predictions. 
+
+Interestingly, the most important features are mostly "X" features (tGravityAcc-energy()-X, tBodyGyroJerk-entropy()-X, etc). 
+
+![shap beeswarm plot](/images/shap_beeswarm_plot.png)
 
 
 ## Next Steps 
